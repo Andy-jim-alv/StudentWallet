@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — StudentWallet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #181a25;
+            --bg-card: #0f131d;
+            --bg-inner: #171c2b;
+            --text-primary: #ffffff;
+            --text-secondary: #68738d;
+            --accent-purple: #7347f5;
+            --accent-purple-light: #9e7aff;
+            --accent-orange: #ff9f1c;
+            --accent-green: #18b87a;
+            --accent-cyan: #2ec4b6;
+            --danger: #ff4d6d;
+            --radius-xl: 32px;
+            --radius-lg: 22px;
+            --radius-pill: 50px;
+            --shadow-card: 0 22px 45px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 15% 15%, rgba(115, 71, 245, 0.12), transparent 40%),
+                              radial-gradient(circle at 85% 80%, rgba(24, 184, 122, 0.08), transparent 40%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 28px 34px;
+        }
+
+        /* Header Superior Limpio */
+        .top-banner {
+            max-width: 1360px;
+            margin: 0 auto 24px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 19, 29, 0.85);
+            border: 1px solid rgba(115, 71, 245, 0.25);
+            padding: 14px 26px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            box-shadow: 0 0 12px var(--accent-purple);
+        }
+
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-title span {
+            font-size: 0.8rem;
+            color: var(--accent-purple-light);
+            background: rgba(115, 71, 245, 0.16);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .user-status-bar {
+            display: flex;
+            gap: 12px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .status-pill {
+            background: #141927;
+            padding: 7px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #b4bfd9;
+        }
+
+        .status-pill strong {
+            color: var(--accent-green);
+        }
+
+        .btn-atm-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+            transition: transform 0.2s;
+        }
+
+        .btn-atm-header:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: rgba(255, 77, 109, 0.14);
+            color: #ff8fa3;
+            border: 1px solid rgba(255, 77, 109, 0.35);
+            padding: 7px 16px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #ff4d6d;
+            color: #ffffff;
+        }
+
+        /* Layout de 3 Columnas */
+        .dashboard-grid {
+            max-width: 1360px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 330px 1fr 370px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        @media (max-width: 1150px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .col-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 1. Barra Superior de Navegación (Izquierda) */
+        .nav-pill-card {
+            padding: 18px 28px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-icon-btn {
+            background: none;
+            border: none;
+            color: #36435e;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            padding: 8px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-icon-btn.active,
+        .nav-icon-btn:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .nav-icon-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* 2. Tarjeta de Perfil y Tarjeta Virtual Estudiantil */
+        .profile-card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            font-size: 0.83rem;
+            color: #8290ad;
+            margin-bottom: 18px;
+            word-break: break-all;
+        }
+
+        .virtual-debit-card {
+            background: linear-gradient(135deg, #6d3df2 0%, #3b1d8f 60%, #1c1236 100%);
+            border-radius: 20px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 12px 25px rgba(109, 61, 242, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            position: relative;
+        }
+
+        .card-chip-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .emv-chip {
+            width: 36px;
+            height: 26px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #ffd166 0%, #f4a261 100%);
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+
+        .card-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.96rem;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.92);
+            margin-bottom: 12px;
+        }
+
+        .card-footer-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.75);
+            text-transform: uppercase;
+        }
+
+        .mini-stat-box {
+            background: var(--bg-inner);
+            border-radius: 16px;
+            padding: 13px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mini-stat-label {
+            font-size: 0.82rem;
+            color: #7c8aa6;
+        }
+
+        .mini-stat-val {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .btn-purple-pill {
+            width: 100%;
+            background: linear-gradient(135deg, #7c4dff 0%, #6535f3 100%);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-pill);
+            padding: 13px 28px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(115, 71, 245, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 6px;
+        }
+
+        .btn-purple-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(115, 71, 245, 0.55);
+        }
+
+        /* 3. Botón Swipe to ATM */
+        .swipe-card {
+            padding: 14px 20px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .swipe-btn {
+            background: linear-gradient(135deg, #7c4dff 0%, #6535f3 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(115, 71, 245, 0.35);
+            transition: transform 0.2s;
+        }
+
+        .swipe-btn:hover {
+            transform: translateX(6px);
+        }
+
+        .chevrons {
+            color: #2c3954;
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            padding-right: 10px;
+            user-select: none;
+        }
+
+        /* COLUMNA CENTRAL: Gráfica Ondulada + Saldo Hoy */
+        .chart-card {
+            padding: 0 0 26px 0;
+        }
+
+        .wave-container {
+            position: relative;
+            width: 100%;
+            height: 210px;
+            overflow: hidden;
+        }
+
+        .wave-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .months-row {
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 24px 18px 24px;
+            color: #596580;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .month-item {
+            position: relative;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .month-item.active {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .month-item.active::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent-purple-light);
+        }
+
+        .balance-inner-box {
+            margin: 0 24px;
+            background: var(--bg-inner);
+            border-radius: 24px;
+            padding: 20px 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .balance-label {
+            color: #5f6c89;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .balance-amount {
+            font-size: 2.15rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .growth-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #5f6c89;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .up-pill {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: var(--accent-purple);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            box-shadow: 0 6px 14px rgba(115, 71, 245, 0.4);
+        }
+
+        /* Tarjeta Central Media: Barras Verticales + Botón Transaction */
+        .bars-tx-card {
+            padding: 22px 28px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .mini-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            height: 64px;
+        }
+
+        .bar-track {
+            width: 11px;
+            height: 100%;
+            background: #1b2234;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            width: 100%;
+            background: linear-gradient(180deg, #9b6bff 0%, #6d3df2 100%);
+            border-radius: 10px;
+            transition: height 0.5s ease;
+        }
+
+        .tx-pill-btn {
+            background: #182032;
+            color: #7d8ba8;
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 11px 26px;
+            border-radius: var(--radius-pill);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tx-pill-btn:hover {
+            background: var(--accent-purple);
+            color: #fff;
+        }
+
+        /* Tarjeta Central Inferior: Botones Send, Receive, Shop, ATM */
+        .actions-card {
+            padding: 20px 28px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .action-sq {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            background: #161d2e;
+            color: #6f52e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.25s ease;
+        }
+
+        .action-item.featured .action-sq,
+        .action-item:hover .action-sq {
+            background: linear-gradient(135deg, #8a5cf6 0%, #6535f3 100%);
+            color: #ffffff;
+            box-shadow: 0 10px 20px rgba(115, 71, 245, 0.45);
+            transform: translateY(-3px);
+        }
+
+        .action-label {
+            font-size: 0.78rem;
+            color: #576480;
+            font-weight: 500;
+        }
+
+        /* COLUMNA DERECHA: Settings (Food, Savings, Rent + Donut) */
+        .settings-card h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .cat-progress-item {
+            margin-bottom: 18px;
+        }
+
+        .cat-progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #657391;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .cat-track {
+            width: 100%;
+            height: 9px;
+            background: #182032;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cat-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .fill-food {
+            background: linear-gradient(90deg, #4f359b 0%, #a56eff 100%);
+        }
+
+        .fill-savings {
+            background: linear-gradient(90deg, #e85d04 0%, #ffbe0b 100%);
+        }
+
+        .fill-rent {
+            background: linear-gradient(90deg, #0f766e 0%, #10b981 100%);
+        }
+
+        .donut-wrapper {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .donut-center-text {
+            position: absolute;
+            text-align: center;
+        }
+
+        .donut-center-text .big-k {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .donut-center-text .sub-k {
+            font-size: 0.72rem;
+            color: #657391;
+            display: block;
+        }
+
+        /* Barra Inferior Derecha: Play Simulation Slider */
+        .play-sim-card {
+            padding: 18px 24px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .play-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #8a5cf6 0%, #6535f3 100%);
+            border: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 0 8px 18px rgba(115, 71, 245, 0.45);
+            transition: transform 0.2s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.06);
+        }
+
+        .sim-slider-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sim-slider-box label {
+            font-size: 0.78rem;
+            color: #7c8aa6;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-purple);
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           CAJERO AUTOMÁTICO VIRTUAL INTERACTIVO (ATM SIMULATOR)
+           ========================================================= */
+        .atm-section-wrapper {
+            max-width: 1360px;
+            margin: 30px auto 0 auto;
+        }
+
+        .atm-machine-card {
+            background: linear-gradient(180deg, #121724 0%, #0c101a 100%);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: 0 28px 60px rgba(0,0,0,0.65);
+            border: 1px solid rgba(115, 71, 245, 0.28);
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr 0.9fr;
+            gap: 28px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 1150px) {
+            .atm-machine-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Pantalla del Cajero */
+        .atm-screen {
+            background: radial-gradient(circle at top left, #1c273d 0%, #0d1320 100%);
+            border: 2px solid #283552;
+            border-radius: 22px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .atm-screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .atm-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.14);
+            padding: 4px 10px;
+            border-radius: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .atm-mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .atm-tab-btn {
+            flex: 1;
+            background: #172033;
+            color: #8b9bb8;
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 10px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .atm-tab-btn.active {
+            background: var(--accent-purple);
+            color: #fff;
+            border-color: var(--accent-purple-light);
+            box-shadow: 0 6px 15px rgba(115, 71, 245, 0.4);
+        }
+
+        .atm-digital-display {
+            background: #090d16;
+            border: 1px solid #222e47;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+            text-align: right;
+        }
+
+        .atm-digital-label {
+            font-size: 0.74rem;
+            color: #657391;
+            display: block;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+
+        .atm-digital-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #34d399;
+            letter-spacing: 1px;
+        }
+
+        .atm-quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn-fast-cash {
+            background: #182236;
+            color: #c3d0e8;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 8px 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-fast-cash:hover {
+            background: #283655;
+            color: #fff;
+        }
+
+        /* Teclado Numérico (Keypad) del Cajero */
+        .atm-keypad-panel {
+            background: #141a29;
+            border-radius: 22px;
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .key-btn {
+            background: linear-gradient(180deg, #212a40 0%, #192033 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 14px 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+            transition: transform 0.1s, background 0.15s;
+        }
+
+        .key-btn:active {
+            transform: scale(0.95);
+        }
+
+        .key-btn:hover {
+            background: #2b3754;
+        }
+
+        .key-btn.clear {
+            background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
+            font-size: 0.85rem;
+        }
+
+        .key-btn.cancel {
+            background: linear-gradient(180deg, #e11d48 0%, #be123c 100%);
+            font-size: 0.85rem;
+        }
+
+        .key-btn.enter {
+            grid-column: span 3;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            font-size: 0.96rem;
+            padding: 14px;
+            margin-top: 4px;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        /* Dispensador de Billetes y Ticket Impreso */
+        .atm-dispenser-panel {
+            background: #141a29;
+            border-radius: 22px;
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .cash-slot {
+            background: #090c14;
+            border: 2px solid #25304a;
+            border-radius: 14px;
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .cash-slot-bar {
+            height: 8px;
+            background: linear-gradient(90deg, #1e293b, #10b981, #1e293b);
+            border-radius: 6px;
+            margin-top: 6px;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+        }
+
+        .bills-tray {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 76px;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            background: rgba(9, 13, 22, 0.6);
+            border-radius: 14px;
+        }
+
+        .banknote {
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.84rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: popBill 0.35s ease forwards;
+        }
+
+        @keyframes popBill {
+            from { opacity: 0; transform: translateY(-12px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .bill-1000 { background: linear-gradient(135deg, #6d28d9, #4c1d95); }
+        .bill-500  { background: linear-gradient(135deg, #1d4ed8, #1e3a8a); }
+        .bill-200  { background: linear-gradient(135deg, #047857, #064e3b); }
+        .bill-100  { background: linear-gradient(135deg, #b91c1c, #7f1d1d); }
+        .bill-50   { background: linear-gradient(135deg, #db2777, #831843); }
+        .bill-20   { background: linear-gradient(135deg, #0284c7, #0c4a6e); }
+
+        .atm-receipt {
+            background: #f8fafc;
+            color: #1e293b;
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+            border-top: 5px dashed #94a3b8;
+        }
+
+        .atm-receipt-title {
+            font-weight: 700;
+            text-align: center;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+        }
+
+        /* SECCIÓN INFERIOR: Historial y Simulador de Presupuesto */
+        .workspace-panels {
+            max-width: 1360px;
+            margin: 28px auto 0 auto;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 1100px) {
+            .workspace-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .panel-header h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tag-badge {
+            font-size: 0.74rem;
+            background: rgba(115, 71, 245, 0.16);
+            color: #c4b5fd;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .select-dark, .input-dark {
+            background: #161c2b;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .btn-small {
+            background: #232c42;
+            color: #d2dcf0;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-small:hover {
+            background: var(--accent-purple);
+            color: #fff;
+        }
+
+        .tx-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .tx-row {
+            background: #151b29;
+            border-radius: 16px;
+            padding: 13px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .tx-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .tx-title {
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+
+        .tx-meta {
+            font-size: 0.76rem;
+            color: #657391;
+        }
+
+        .tx-amount {
+            font-weight: 700;
+            font-size: 0.98rem;
+        }
+
+        .tx-amount.income {
+            color: var(--accent-green);
+        }
+
+        .tx-amount.expense {
+            color: #f87171;
+        }
+
+        .dp-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .dp-box {
+            background: #151b29;
+            padding: 12px 15px;
+            border-radius: 14px;
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        .dp-box .cat-name {
+            font-size: 0.78rem;
+            color: #7c8aa6;
+        }
+
+        .dp-box .cat-val {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        /* Modal para agregar Gasto/Ingreso */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 10, 16, 0.78);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid rgba(115, 71, 245, 0.35);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 430px;
+            padding: 30px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.65);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 18px;
+            font-size: 1.25rem;
+        }
+
+        .form-row {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-row label {
+            font-size: 0.82rem;
+            color: #8290ad;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #161f33;
+            border-left: 4px solid var(--accent-purple);
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 14px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            font-size: 0.88rem;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra Superior Limpia -->
+    <header class="top-banner">
+        <div class="brand-title">
+            <div class="brand-dot"></div>
+            <h1>StudentWallet</h1>
+            <span>Finanzas Estudiantiles</span>
+        </div>
+        <div class="user-status-bar">
+            <div class="status-pill">Cuenta activa: <strong id="active-user-badge">Cargando...</strong></div>
+            <button class="btn-atm-header" onclick="scrollToSection('atm-section')">🏧 Ir al Cajero Virtual (ATM)</button>
+            <button class="btn-logout" onclick="logoutUser()">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- DASHBOARD DE 3 COLUMNAS -->
+    <main class="dashboard-grid">
+
+        <!-- COLUMNA 1: Navegación + Tarjeta Universitaria + Acceso Rápido -->
+        <section class="col-stack">
+            <div class="card nav-pill-card">
+                <button class="nav-icon-btn active" title="Inicio / Dashboard" onclick="scrollToSection('top')">
+                    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
+                <button class="nav-icon-btn" title="Historial y Buscador" onclick="scrollToSection('panel-explorer')">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+                <button class="nav-icon-btn" title="Cajero Automático Virtual" onclick="scrollToSection('atm-section')">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                </button>
+                <button class="nav-icon-btn" title="Planificador de Presupuesto" onclick="scrollToSection('panel-simulator')">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                </button>
+            </div>
+
+            <!-- Tarjeta Resumen de Cuenta del Estudiante -->
+            <div class="card profile-card">
+                <h2 id="profile-name">Mi Billetera</h2>
+                <div class="profile-email" id="profile-email">usuario@universidad.edu</div>
+
+                <!-- Tarjeta Bancaria Virtual Estudiantil -->
+                <div class="virtual-debit-card">
+                    <div class="card-chip-row">
+                        <div class="emv-chip"></div>
+                        <span style="font-size:0.75rem; font-weight:700; color:#c4b5fd;">STUDENT CARD</span>
+                    </div>
+                    <div class="card-number">4532 •••• •••• 8841</div>
+                    <div class="card-footer-row">
+                        <span id="card-holder-name">ESTUDIANTE</span>
+                        <span>VÁLIDA 12/29</span>
+                    </div>
+                </div>
+
+                <div class="mini-stat-box">
+                    <span class="mini-stat-label">Ingresos Acumulados</span>
+                    <span class="mini-stat-val" style="color: var(--accent-green);" id="stat-income">$0</span>
+                </div>
+
+                <div class="mini-stat-box">
+                    <span class="mini-stat-label">Gastos Acumulados</span>
+                    <span class="mini-stat-val" style="color: #f87171;" id="stat-expense">$0</span>
+                </div>
+
+                <button class="btn-purple-pill" onclick="openModal('expense')">
+                    + Registrar Movimiento
+                </button>
+            </div>
+
+            <!-- Botón Swipe para ir directo al Cajero o Simulador -->
+            <div class="card swipe-card">
+                <button class="swipe-btn" onclick="scrollToSection('atm-section')">Abrir Cajero Virtual</button>
+                <span class="chevrons">&gt;&gt;&gt;</span>
+            </div>
+        </section>
+
+        <!-- COLUMNA 2: Gráfica de Línea + Barras + Botones Rápidos -->
+        <section class="col-stack">
+            <div class="card chart-card">
+                <div class="wave-container">
+                    <svg class="wave-svg" viewBox="0 0 500 190" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.65" />
+                                <stop offset="100%" stop-color="#0f131d" stop-opacity="0.0" />
+                            </linearGradient>
+                        </defs>
+                        <path id="wave-area" d="M0,150 C50,145 75,95 115,105 C155,115 175,60 215,75 C255,90 290,35 335,55 C380,75 415,15 465,30 C485,35 495,20 500,18 L500,190 L0,190 Z" fill="url(#purpleGrad)" />
+                        <path id="wave-line" d="M0,150 C50,145 75,95 115,105 C155,115 175,60 215,75 C255,90 290,35 335,55 C380,75 415,15 465,30 C485,35 495,20 500,18" fill="none" stroke="#8b5cf6" stroke-width="4.5" stroke-linecap="round" />
+                    </svg>
+                </div>
+
+                <div class="months-row">
+                    <span class="month-item" onclick="selectMonth(this, 'Jan')">Jan</span>
+                    <span class="month-item" onclick="selectMonth(this, 'Feb')">Feb</span>
+                    <span class="month-item" onclick="selectMonth(this, 'Mar')">Mar</span>
+                    <span class="month-item" onclick="selectMonth(this, 'Apr')">Apr</span>
+                    <span class="month-item active" onclick="selectMonth(this, 'May')">May</span>
+                </div>
+
+                <div class="balance-inner-box">
+                    <div>
+                        <div class="balance-label">Today (Saldo Disponible)</div>
+                        <div class="balance-amount" id="display-balance">$3,281</div>
+                    </div>
+                    <div class="growth-badge">
+                        <span id="growth-pct">5.3%</span>
+                        <div class="up-pill">↑</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta Barras Verticales + Transaction -->
+            <div class="card bars-tx-card">
+                <div class="mini-bars" id="mini-bars-container">
+                    <div class="bar-track"><div class="bar-fill" style="height: 38%;"></div></div>
+                    <div class="bar-track"><div class="bar-fill" style="height: 62%;"></div></div>
+                    <div class="bar-track"><div class="bar-fill" style="height: 48%;"></div></div>
+                    <div class="bar-track"><div class="bar-fill" style="height: 75%;"></div></div>
+                    <div class="bar-track"><div class="bar-fill" style="height: 90%;"></div></div>
+                </div>
+                <button class="tx-pill-btn" onclick="scrollToSection('panel-explorer')">Transaction</button>
+            </div>
+
+            <!-- Tarjeta Send / Receive / Shop / ATM -->
+            <div class="card actions-card">
+                <div class="action-item" onclick="openModal('expense', 'Utilities')">
+                    <div class="action-sq">↑</div>
+                    <span class="action-label">Send</span>
+                </div>
+                <div class="action-item" onclick="openModal('income', 'Income')">
+                    <div class="action-sq">↓</div>
+                    <span class="action-label">Receive</span>
+                </div>
+                <div class="action-item featured" onclick="openModal('expense', 'Food')">
+                    <div class="action-sq">🛒</div>
+                    <span class="action-label">Shop</span>
+                </div>
+                <div class="action-item" onclick="scrollToSection('atm-section')">
+                    <div class="action-sq">🏧</div>
+                    <span class="action-label">Cajero ATM</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLUMNA 3: Settings (Barras de Categoría + Gráfico Anillo + Play Simulation) -->
+        <section class="col-stack">
+            <div class="card settings-card">
+                <h2>Settings &amp; Limits</h2>
+
+                <div class="cat-progress-item">
+                    <div class="cat-progress-header">
+                        <span>Food (Comida)</span>
+                        <span id="label-food">$1,970 / $2,500</span>
+                    </div>
+                    <div class="cat-track">
+                        <div class="cat-fill fill-food" id="bar-food" style="width: 78%;"></div>
+                    </div>
+                </div>
+
+                <div class="cat-progress-item">
+                    <div class="cat-progress-header">
+                        <span>Savings (Ahorro)</span>
+                        <span id="label-savings">$1,100 / $2,000</span>
+                    </div>
+                    <div class="cat-track">
+                        <div class="cat-fill fill-savings" id="bar-savings" style="width: 55%;"></div>
+                    </div>
+                </div>
+
+                <div class="cat-progress-item">
+                    <div class="cat-progress-header">
+                        <span>Rent (Renta / Servicios)</span>
+                        <span id="label-rent">$3,200 / $3,500</span>
+                    </div>
+                    <div class="cat-track">
+                        <div class="cat-fill fill-rent" id="bar-rent" style="width: 88%;"></div>
+                    </div>
+                </div>
+
+                <!-- Gráfico Circular (Donut) -->
+                <div class="donut-wrapper">
+                    <svg width="200" height="200" viewBox="0 0 42 42">
+                        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#182032" stroke-width="4.2"></circle>
+                        <circle id="donut-seg-1" cx="21" cy="21" r="15.915" fill="transparent" stroke="#7c4dff" stroke-width="4.2" stroke-dasharray="35 65" stroke-dashoffset="25" stroke-linecap="round"></circle>
+                        <circle id="donut-seg-2" cx="21" cy="21" r="15.915" fill="transparent" stroke="#ff9f1c" stroke-width="4.2" stroke-dasharray="25 75" stroke-dashoffset="90" stroke-linecap="round"></circle>
+                        <circle id="donut-seg-3" cx="21" cy="21" r="15.915" fill="transparent" stroke="#10b981" stroke-width="4.2" stroke-dasharray="40 60" stroke-dashoffset="65" stroke-linecap="round"></circle>
+                    </svg>
+                    <div class="donut-center-text">
+                        <span class="big-k" id="donut-total-text">8.0k</span>
+                        <span class="sub-k">Gasto Total</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Play para correr Simulación de Presupuesto -->
+            <div class="card play-sim-card">
+                <button class="play-btn" title="Ejecutar Simulación de Presupuesto" onclick="runBudgetSimulation()">
+                    ▶
+                </button>
+                <div class="sim-slider-box">
+                    <label>
+                        <span>Simular Ingreso:</span>
+                        <strong id="slider-val-label">$8,500</strong>
+                    </label>
+                    <input type="range" id="quick-income-slider" min="2000" max="25000" step="250" value="8500" oninput="syncSlider(this.value)" />
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================================================
+         NUEVA SECCIÓN: CAJERO AUTOMÁTICO VIRTUAL (ATM SIMULATOR)
+         ========================================================= -->
+    <section class="atm-section-wrapper" id="atm-section">
+        <div class="atm-machine-card">
+
+            <!-- 1. Pantalla Interactiva del Cajero -->
+            <div class="atm-screen">
+                <div>
+                    <div class="atm-screen-header">
+                        <h3 style="font-size:1.1rem;">🏧 Cajero Automático StudentWallet</h3>
+                        <span class="atm-badge">EN LÍNEA 24/7</span>
+                    </div>
+
+                    <div class="atm-mode-tabs">
+                        <button class="atm-tab-btn active" id="tab-withdraw" onclick="setAtmMode('withdraw')">Retirar Efectivo</button>
+                        <button class="atm-tab-btn" id="tab-deposit" onclick="setAtmMode('deposit')">Depositar</button>
+                        <button class="atm-tab-btn" id="tab-transfer" onclick="setAtmMode('transfer')">Transferir</button>
+                    </div>
+
+                    <div class="atm-digital-display">
+                        <span class="atm-digital-label" id="atm-screen-prompt">MONTO A RETIRAR (MÚLTIPLOS DE $20 O $50):</span>
+                        <div class="atm-digital-value" id="atm-amount-display">$500</div>
+                    </div>
+
+                    <!-- Botones de Efectivo Rápido -->
+                    <div class="atm-quick-amounts">
+                        <button class="btn-fast-cash" onclick="setAtmAmount(100)">$100</button>
+                        <button class="btn-fast-cash" onclick="setAtmAmount(200)">$200</button>
+                        <button class="btn-fast-cash" onclick="setAtmAmount(500)">$500</button>
+                        <button class="btn-fast-cash" onclick="setAtmAmount(1000)">$1,000</button>
+                    </div>
+                </div>
+
+                <!-- Opciones adicionales según operación -->
+                <div id="atm-extra-fields">
+                    <div id="atm-category-box" style="display:flex; flex-direction:column; gap:6px;">
+                        <label style="font-size:0.78rem; color:#8b9bb8;">Sección a la que se cargará el retiro:</label>
+                        <select class="select-dark" id="atm-category">
+                            <option value="Food">Food (Comida y Cafetería)</option>
+                            <option value="Entertainment">Entertainment (Salidas / Cine)</option>
+                            <option value="Transport">Transport (Pasajes / Gasolina)</option>
+                            <option value="Study">Study (Materiales / Copias)</option>
+                            <option value="Utilities">Utilities (Servicios)</option>
+                            <option value="Rent">Rent (Renta)</option>
+                        </select>
+                    </div>
+
+                    <div id="atm-recipient-box" style="display:none; flex-direction:column; gap:6px;">
+                        <label style="font-size:0.78rem; color:#8b9bb8;">Correo del compañero destinatario:</label>
+                        <input type="email" class="input-dark" id="atm-recipient" placeholder="Ej. johnkohl.mail.com" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Teclado Físico del Cajero (Keypad) -->
+            <div class="atm-keypad-panel">
+                <div style="font-size:0.82rem; color:#7c8aa6; margin-bottom:10px; font-weight:600; text-align:center;">
+                    TECLADO DEL CAJERO
+                </div>
+                <div class="keypad-grid">
+                    <button class="key-btn" onclick="pressAtmKey('1')">1</button>
+                    <button class="key-btn" onclick="pressAtmKey('2')">2</button>
+                    <button class="key-btn" onclick="pressAtmKey('3')">3</button>
+                    <button class="key-btn" onclick="pressAtmKey('4')">4</button>
+                    <button class="key-btn" onclick="pressAtmKey('5')">5</button>
+                    <button class="key-btn" onclick="pressAtmKey('6')">6</button>
+                    <button class="key-btn" onclick="pressAtmKey('7')">7</button>
+                    <button class="key-btn" onclick="pressAtmKey('8')">8</button>
+                    <button class="key-btn" onclick="pressAtmKey('9')">9</button>
+                    <button class="key-btn clear" onclick="backspaceAtmKey()">BORRAR</button>
+                    <button class="key-btn" onclick="pressAtmKey('0')">0</button>
+                    <button class="key-btn cancel" onclick="clearAtmAmount()">LIMPIAR</button>
+                    <button class="key-btn enter" onclick="executeAtmOperation()">✔ CONFIRMAR OPERACIÓN</button>
+                </div>
+            </div>
+
+            <!-- 3. Ranura Dispensadora de Billetes y Comprobante -->
+            <div class="atm-dispenser-panel">
+                <div class="cash-slot">
+                    <span style="font-size:0.74rem; color:#94a3b8; letter-spacing:1px; font-weight:700;">RANURA DE EFECTIVO / BILLETES DISPENSADOS</span>
+                    <div class="cash-slot-bar"></div>
+                </div>
+
+                <div class="bills-tray" id="atm-bills-tray">
+                    <span style="font-size:0.8rem; color:#55607a;">Realiza un retiro o depósito para ver el desglose de billetes aquí...</span>
+                </div>
+
+                <div class="atm-receipt" id="atm-receipt-box">
+                    <div class="atm-receipt-title">COMPROBANTE CAJERO STUDENTWALLET</div>
+                    <div id="atm-receipt-body">
+                        FECHA: --/--/----<br/>
+                        OPERACIÓN: EN ESPERA<br/>
+                        MONTO: $0.00<br/>
+                        SALDO DISPONIBLE: Consulta en pantalla
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- PANELES INFERIORES: HISTORIAL Y SIMULADOR DE PRESUPUESTO -->
+    <section class="workspace-panels">
+
+        <!-- Panel Izquierdo: Historial de Movimientos -->
+        <div class="card" id="panel-explorer">
+            <div class="panel-header">
+                <h3>
+                    Historial de Movimientos
+                    <span class="tag-badge">Filtros y Buscador</span>
+                </h3>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-small" onclick="openModal('expense')">+ Nuevo Movimiento</button>
+                    <button class="btn-small" onclick="undoLastTransaction()" title="Deshacer último movimiento">↩ Deshacer (<span id="undo-count">0</span>)</button>
+                </div>
+            </div>
+
+            <div class="controls-bar">
+                <select class="select-dark" id="sort-key" onchange="loadDashboardData()">
+                    <option value="date">Ordenar por: Fecha</option>
+                    <option value="amount">Ordenar por: Monto</option>
+                    <option value="category">Ordenar por: Categoría</option>
+                </select>
+                <select class="select-dark" id="sort-order" onchange="loadDashboardData()">
+                    <option value="desc">De mayor a menor / Más recientes</option>
+                    <option value="asc">De menor a mayor / Más antiguos</option>
+                </select>
+
+                <select class="select-dark" id="search-field">
+                    <option value="category">Buscar Categoría (Ej. Food)</option>
+                    <option value="date">Buscar Fecha (Ej. 2026-05-04)</option>
+                    <option value="amount">Buscar Monto Exacto (Ej. 1450)</option>
+                </select>
+                <input type="text" class="input-dark" id="search-input" placeholder="Valor a buscar..." style="flex:1; min-width:130px;" />
+                <button class="btn-small" onclick="executeSearch()">🔍 Buscar</button>
+                <button class="btn-small" onclick="loadDashboardData()">Ver Todos</button>
+            </div>
+
+            <div id="search-feedback" style="font-size:0.8rem; color:#a5b4fc; margin-bottom:10px; display:none;"></div>
+
+            <div class="tx-list" id="tx-list-container"></div>
+        </div>
+
+        <!-- Panel Derecho: Simulador de Presupuesto Estudiantil -->
+        <div class="card" id="panel-simulator">
+            <div class="panel-header">
+                <h3>
+                    Simulador de Presupuesto Estudiantil
+                    <span class="tag-badge">Distribución Inteligente</span>
+                </h3>
+            </div>
+            <p style="font-size:0.84rem; color:#7c8aa6; margin-bottom:16px;">
+                Simula y acomoda tu dinero semanal, mensual o anual priorizando tus gastos importantes (Renta, Comida, Servicios, Transporte) y calculando cuánto puedes destinar a Entretenimiento y Ahorro.
+            </p>
+
+            <div class="controls-bar">
+                <select class="select-dark" id="sim-timeframe" onchange="runBudgetSimulation()">
+                    <option value="weekly">Simulación Semanal</option>
+                    <option value="monthly" selected>Simulación Mensual</option>
+                    <option value="annual">Simulación Anual</option>
+                </select>
+                <input type="number" class="input-dark" id="sim-income-input" value="8500" placeholder="Ingreso disponible ($)" style="width:150px;" />
+                <button class="btn-small" style="background:var(--accent-purple); color:#fff;" onclick="runBudgetSimulation()">
+                    ⚡ Calcular Distribución Ideal
+                </button>
+            </div>
+
+            <div id="sim-metrics-banner" style="font-size:0.8rem; color:#34d399; margin-bottom:10px;"></div>
+
+            <div class="dp-grid" id="dp-breakdown-container"></div>
+
+            <div style="margin-top:16px;">
+                <h4 style="font-size:0.85rem; color:#94a3b8; margin-bottom:8px;">Gastos Recomendados para tu Presupuesto:</h4>
+                <div class="tx-list" id="dp-items-list" style="max-height:185px;"></div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- MODAL PARA REGISTRAR GASTO O INGRESO -->
+    <div class="modal-backdrop" id="tx-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Registrar Movimiento</h3>
+            <div class="form-row">
+                <label>Tipo de Movimiento</label>
+                <select class="select-dark" id="modal-type">
+                    <option value="expense">Gasto Estudiantil (-)</option>
+                    <option value="income">Ingreso / Beca / Mesada (+)</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Concepto o Descripción</label>
+                <input type="text" class="input-dark" id="modal-concept" placeholder="Ej. Comida en cafetería, Pago de luz, Netflix..." />
+            </div>
+            <div class="form-row">
+                <label>Sección / Categoría</label>
+                <select class="select-dark" id="modal-category">
+                    <option value="Food">Food (Comida y Despensa)</option>
+                    <option value="Rent">Rent (Renta / Residencia)</option>
+                    <option value="Utilities">Utilities (Servicios: Internet, Luz)</option>
+                    <option value="Entertainment">Entertainment (Streaming, Salidas)</option>
+                    <option value="Transport">Transport (Pasajes / Transporte)</option>
+                    <option value="Study">Study (Materiales y Libros)</option>
+                    <option value="Savings">Savings (Ahorro)</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Monto ($)</label>
+                <input type="number" class="input-dark" id="modal-amount" placeholder="Ej. 350" />
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button class="btn-small" onclick="closeModal()">Cancelar</button>
+                <button class="btn-purple-pill" style="padding:10px 24px; width:auto; margin-top:0;" onclick="submitTransaction()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast-msg">Notificación</div>
+
+    <script src="static/github-pages-engine.js"></script>
+    <script>
+        let currentAtmMode = 'withdraw';
+        let currentAtmAmountStr = '500';
+
+        function goToLoginPage() {
+            if (window.location.hostname.includes('github.io') || window.location.protocol === 'file:') {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = '/login';
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast-msg');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3600);
+        }
+
+        function scrollToSection(id) {
+            if (id === 'top') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function logoutUser() {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            goToLoginPage();
+        }
+
+        function formatMoney(num) {
+            return '$' + Number(num || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        }
+
+        /* =========================================================
+           FUNCIONES DEL CAJERO AUTOMÁTICO VIRTUAL (ATM)
+           ========================================================= */
+        function setAtmMode(mode) {
+            currentAtmMode = mode;
+            document.getElementById('tab-withdraw').classList.toggle('active', mode === 'withdraw');
+            document.getElementById('tab-deposit').classList.toggle('active', mode === 'deposit');
+            document.getElementById('tab-transfer').classList.toggle('active', mode === 'transfer');
+
+            const prompt = document.getElementById('atm-screen-prompt');
+            const catBox = document.getElementById('atm-category-box');
+            const recBox = document.getElementById('atm-recipient-box');
+
+            if (mode === 'withdraw') {
+                prompt.textContent = 'MONTO A RETIRAR (BILLETES DE $20 A $1,000):';
+                catBox.style.display = 'flex';
+                recBox.style.display = 'none';
+            } else if (mode === 'deposit') {
+                prompt.textContent = 'MONTO EN EFECTIVO A DEPOSITAR A TU CUENTA:';
+                catBox.style.display = 'none';
+                recBox.style.display = 'none';
+            } else {
+                prompt.textContent = 'MONTO A TRANSFERIR A OTRO COMPAÑERO:';
+                catBox.style.display = 'none';
+                recBox.style.display = 'flex';
+            }
+        }
+
+        function updateAtmDisplay() {
+            const val = parseInt(currentAtmAmountStr || '0', 10);
+            document.getElementById('atm-amount-display').textContent = formatMoney(val);
+        }
+
+        function setAtmAmount(amount) {
+            currentAtmAmountStr = String(amount);
+            updateAtmDisplay();
+        }
+
+        function pressAtmKey(digit) {
+            if (currentAtmAmountStr === '0') {
+                currentAtmAmountStr = digit;
+            } else if (currentAtmAmountStr.length < 6) {
+                currentAtmAmountStr += digit;
+            }
+            updateAtmDisplay();
+        }
+
+        function backspaceAtmKey() {
+            currentAtmAmountStr = currentAtmAmountStr.slice(0, -1) || '0';
+            updateAtmDisplay();
+        }
+
+        function clearAtmAmount() {
+            currentAtmAmountStr = '0';
+            updateAtmDisplay();
+        }
+
+        async function executeAtmOperation() {
+            const amount = parseFloat(currentAtmAmountStr || '0');
+            const category = document.getElementById('atm-category').value;
+            const recipient = document.getElementById('atm-recipient').value;
+
+            const res = await fetch('/api/atm/operate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    operation: currentAtmMode,
+                    amount: amount,
+                    category: category,
+                    recipient: recipient
+                })
+            });
+            const data = await res.json();
+
+            if (!data.ok) {
+                showToast(data.error);
+                return;
+            }
+
+            showToast(data.message);
+
+            // Mostrar billetes dispensados / ingresados
+            const tray = document.getElementById('atm-bills-tray');
+            tray.innerHTML = '';
+            if (data.bills && data.bills.breakdown && data.bills.breakdown.length > 0) {
+                data.bills.breakdown.forEach(item => {
+                    const pill = document.createElement('div');
+                    pill.className = `banknote bill-${item.denomination}`;
+                    pill.innerHTML = `<span>💵 $${item.denomination}</span> <span>x${item.count}</span>`;
+                    tray.appendChild(pill);
+                });
+            } else {
+                tray.innerHTML = '<span style="font-size:0.82rem; color:#34d399;">✔ Transferencia electrónica completada sin billetes físicos.</span>';
+            }
+
+            // Actualizar ticket impreso
+            document.getElementById('atm-receipt-body').innerHTML = `
+                FOLIO: <strong>${data.folio}</strong><br/>
+                FECHA: ${data.time}<br/>
+                OPERACIÓN: <strong>${data.operation}</strong><br/>
+                IMPORTE: <strong>${formatMoney(data.amount)}</strong><br/>
+                NUEVO SALDO: <strong>${formatMoney(data.new_balance)}</strong>
+            `;
+
+            loadDashboardData();
+        }
+
+        /* =========================================================
+           CARGA DEL DASHBOARD Y GRÁFICAS
+           ========================================================= */
+        async function loadDashboardData() {
+            const sortBy = document.getElementById('sort-key').value;
+            const order = document.getElementById('sort-order').value;
+            document.getElementById('search-feedback').style.display = 'none';
+
+            const res = await fetch(`/api/dashboard?sort_by=${sortBy}&order=${order}`);
+            const data = await res.json();
+            if (!data.ok) {
+                goToLoginPage();
+                return;
+            }
+
+            document.getElementById('active-user-badge').textContent = data.user.email;
+            document.getElementById('profile-name').textContent = 'Hola, ' + data.user.name;
+            document.getElementById('profile-email').textContent = data.user.email;
+            document.getElementById('card-holder-name').textContent = data.user.name.toUpperCase();
+            document.getElementById('stat-income').textContent = formatMoney(data.total_income);
+            document.getElementById('stat-expense').textContent = formatMoney(data.total_expenses);
+
+            document.getElementById('display-balance').textContent = formatMoney(data.balance);
+            document.getElementById('undo-count').textContent = data.undo_available;
+
+            // Actualizar barras de progreso (Food, Savings, Rent+Utilities)
+            const foodSpent = data.category_totals.Food || 0;
+            const savingsSpent = data.category_totals.Savings || 0;
+            const rentSpent = (data.category_totals.Rent || 0) + (data.category_totals.Utilities || 0);
+
+            const foodLimit = data.monthly_limits.Food || 2500;
+            const savingsLimit = data.monthly_limits.Savings || 2000;
+            const rentLimit = (data.monthly_limits.Rent || 3500) + (data.monthly_limits.Utilities || 1000);
+
+            document.getElementById('label-food').textContent = `${formatMoney(foodSpent)} / ${formatMoney(foodLimit)}`;
+            document.getElementById('label-savings').textContent = `${formatMoney(savingsSpent)} / ${formatMoney(savingsLimit)}`;
+            document.getElementById('label-rent').textContent = `${formatMoney(rentSpent)} / ${formatMoney(rentLimit)}`;
+
+            document.getElementById('bar-food').style.width = Math.min(100, Math.round((foodSpent / foodLimit) * 100)) + '%';
+            document.getElementById('bar-savings').style.width = Math.min(100, Math.round((savingsSpent / savingsLimit) * 100)) + '%';
+            document.getElementById('bar-rent').style.width = Math.min(100, Math.round((rentSpent / rentLimit) * 100)) + '%';
+
+            // Actualizar gráfico circular (Donut)
+            const totalExp = data.total_expenses || 1;
+            const kText = totalExp >= 1000 ? (totalExp / 1000).toFixed(1) + 'k' : '$' + totalExp;
+            document.getElementById('donut-total-text').textContent = kText;
+
+            const pctFood = Math.max(8, Math.round((foodSpent / totalExp) * 100));
+            const pctRent = Math.max(8, Math.round((rentSpent / totalExp) * 100));
+            const pctOther = Math.max(8, 100 - pctFood - pctRent);
+
+            document.getElementById('donut-seg-1').setAttribute('stroke-dasharray', `${pctFood} ${100 - pctFood}`);
+            document.getElementById('donut-seg-2').setAttribute('stroke-dasharray', `${pctOther} ${100 - pctOther}`);
+            document.getElementById('donut-seg-3').setAttribute('stroke-dasharray', `${pctRent} ${100 - pctRent}`);
+
+            renderTransactionsList(data.transactions);
+        }
+
+        function renderTransactionsList(transactions) {
+            const container = document.getElementById('tx-list-container');
+            container.innerHTML = '';
+            if (!transactions || transactions.length === 0) {
+                container.innerHTML = '<div style="color:#657391; padding:14px;">No se encontraron movimientos.</div>';
+                return;
+            }
+            transactions.forEach(tx => {
+                const row = document.createElement('div');
+                row.className = 'tx-row';
+                const sign = tx.type === 'income' ? '+' : '-';
+                row.innerHTML = `
+                    <div class="tx-info">
+                        <span class="tx-title">${tx.title}</span>
+                        <span class="tx-meta">Sección: <strong>${tx.category}</strong> • Fecha: ${tx.date}</span>
+                    </div>
+                    <div class="tx-amount ${tx.type}">${sign}${formatMoney(tx.amount)}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        async function executeSearch() {
+            const field = document.getElementById('search-field').value;
+            const query = document.getElementById('search-input').value;
+            const res = await fetch('/api/transactions/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ field, query })
+            });
+            const data = await res.json();
+            if (!data.ok) {
+                showToast(data.error);
+                return;
+            }
+            const fb = document.getElementById('search-feedback');
+            fb.style.display = 'block';
+            fb.innerHTML = `✅ <strong>Resultados de búsqueda:</strong> ${data.results.length} movimiento(s) encontrado(s).`;
+            renderTransactionsList(data.results);
+        }
+
+        function openModal(type = 'expense', category = 'Food') {
+            document.getElementById('modal-type').value = type;
+            if (category !== 'Income') {
+                document.getElementById('modal-category').value = category;
+            }
+            document.getElementById('modal-concept').value = '';
+            document.getElementById('modal-amount').value = '';
+            document.getElementById('tx-modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('tx-modal').classList.remove('show');
+        }
+
+        async function submitTransaction() {
+            const type = document.getElementById('modal-type').value;
+            const title = document.getElementById('modal-concept').value;
+            const category = document.getElementById('modal-category').value;
+            const amount = document.getElementById('modal-amount').value;
+
+            const res = await fetch('/api/transactions/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, title, category, amount })
+            });
+            const data = await res.json();
+            if (data.ok) {
+                closeModal();
+                showToast(data.message);
+                loadDashboardData();
+            } else {
+                showToast(data.error);
+            }
+        }
+
+        async function undoLastTransaction() {
+            const res = await fetch('/api/transactions/undo', { method: 'POST' });
+            const data = await res.json();
+            if (data.ok) {
+                showToast(data.message);
+                loadDashboardData();
+            } else {
+                showToast(data.error);
+            }
+        }
+
+        function syncSlider(val) {
+            document.getElementById('slider-val-label').textContent = formatMoney(val);
+            document.getElementById('sim-income-input').value = val;
+            runBudgetSimulation();
+        }
+
+        async function runBudgetSimulation() {
+            const income = document.getElementById('sim-income-input').value;
+            const timeframe = document.getElementById('sim-timeframe').value;
+            document.getElementById('quick-income-slider').value = income;
+            document.getElementById('slider-val-label').textContent = formatMoney(income);
+
+            const res = await fetch('/api/simulate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ income, timeframe })
+            });
+            const data = await res.json();
+            if (!data.ok) {
+                showToast(data.error);
+                return;
+            }
+
+            const sim = data.simulation;
+            document.getElementById('sim-metrics-banner').innerHTML =
+                `✔ Presupuesto optimizado para un ingreso de <strong>${formatMoney(sim.total_income)}</strong>`;
+
+            const bdContainer = document.getElementById('dp-breakdown-container');
+            bdContainer.innerHTML = '';
+            Object.entries(sim.category_breakdown).forEach(([cat, val]) => {
+                const div = document.createElement('div');
+                div.className = 'dp-box';
+                div.innerHTML = `
+                    <div class="cat-name">${cat}</div>
+                    <div class="cat-val">${formatMoney(val)}</div>
+                `;
+                bdContainer.appendChild(div);
+            });
+
+            const itemsContainer = document.getElementById('dp-items-list');
+            itemsContainer.innerHTML = '';
+            sim.selected_items.forEach(it => {
+                const row = document.createElement('div');
+                row.className = 'tx-row';
+                row.innerHTML = `
+                    <div class="tx-info">
+                        <span class="tx-title">✔ ${it.name}</span>
+                        <span class="tx-meta">Sección: ${it.category}</span>
+                    </div>
+                    <div class="tx-amount income">${formatMoney(it.cost)}</div>
+                `;
+                itemsContainer.appendChild(row);
+            });
+        }
+
+        function selectMonth(el, month) {
+            document.querySelectorAll('.month-item').forEach(m => m.classList.remove('active'));
+            el.classList.add('active');
+            const waves = {
+                'Jan': 'M0,165 C55,140 85,120 130,130 C175,140 210,95 255,100 C300,105 340,70 390,80 C440,90 470,55 500,50',
+                'Feb': 'M0,155 C60,120 95,135 140,105 C185,75 220,110 265,85 C310,60 350,55 400,65 C450,75 480,35 500,30',
+                'Mar': 'M0,140 C50,150 90,85 135,95 C180,105 215,50 260,65 C305,80 345,45 395,55 C445,65 475,25 500,22',
+                'Apr': 'M0,160 C45,130 80,110 120,90 C160,70 200,85 245,60 C290,35 330,65 380,40 C430,15 470,30 500,20',
+                'May': 'M0,150 C50,145 75,95 115,105 C155,115 175,60 215,75 C255,90 290,35 335,55 C380,75 415,15 465,30 C485,35 495,20 500,18'
+            };
+            const path = waves[month] || waves['May'];
+            document.getElementById('wave-line').setAttribute('d', path);
+            document.getElementById('wave-area').setAttribute('d', path + ' L500,190 L0,190 Z');
+            showToast(`Vista del mes: ${month}`);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDashboardData();
+            runBudgetSimulation();
+        });
+    </script>
+</body>
+</html>

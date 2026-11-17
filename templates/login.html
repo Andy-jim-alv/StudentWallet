@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — StudentWallet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #181a25;
+            --bg-card: #0f131d;
+            --text-primary: #ffffff;
+            --text-secondary: #68738d;
+            --accent-purple: #7347f5;
+            --accent-purple-light: #9e7aff;
+            --radius-xl: 32px;
+            --radius-pill: 50px;
+            --shadow-card: 0 25px 55px rgba(0, 0, 0, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(115, 71, 245, 0.16), transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(24, 184, 122, 0.10), transparent 45%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 390px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(115, 71, 245, 0.15);
+            border: 1px solid rgba(115, 71, 245, 0.35);
+            color: #c4b5fd;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+
+        .brand-header h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-header p {
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            margin-top: 4px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 36px 34px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .login-card h2 {
+            font-size: 1.65rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #222b40;
+            padding-bottom: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.25s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--accent-purple);
+        }
+
+        .input-group input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 0.96rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .input-group input:-webkit-autofill,
+        .input-group input:-webkit-autofill:hover,
+        .input-group input:-webkit-autofill:focus,
+        .input-group input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #0f131d inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            caret-color: #ffffff;
+        }
+
+        .input-group input::placeholder {
+            color: #55607a;
+        }
+
+        .input-icon {
+            color: #455373;
+            cursor: pointer;
+            margin-left: 10px;
+            display: flex;
+            transition: color 0.2s;
+        }
+
+        .input-icon:hover {
+            color: #9e7aff;
+        }
+
+        .mode-switch-link {
+            display: inline-block;
+            color: #637396;
+            font-size: 0.84rem;
+            text-decoration: underline;
+            margin-top: 2px;
+            margin-bottom: 28px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .mode-switch-link:hover {
+            color: #ffffff;
+        }
+
+        .auth-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-purple-pill {
+            width: 100%;
+            background: linear-gradient(135deg, #7c4dff 0%, #6535f3 100%);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-pill);
+            padding: 14px 36px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 26px rgba(115, 71, 245, 0.45);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-purple-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(115, 71, 245, 0.6);
+        }
+
+        .btn-outline-pill {
+            width: 100%;
+            background: rgba(115, 71, 245, 0.12);
+            color: #b79cff;
+            border: 1px solid rgba(115, 71, 245, 0.35);
+            border-radius: var(--radius-pill);
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-pill:hover {
+            background: rgba(115, 71, 245, 0.26);
+            color: #fff;
+        }
+
+        .swipe-card {
+            padding: 14px 22px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .swipe-btn {
+            background: linear-gradient(135deg, #7c4dff 0%, #6535f3 100%);
+            color: white;
+            border: none;
+            padding: 12px 26px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(115, 71, 245, 0.35);
+            transition: transform 0.2s;
+        }
+
+        .swipe-btn:hover {
+            transform: translateX(6px);
+        }
+
+        .chevrons {
+            color: #334160;
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            padding-right: 10px;
+            user-select: none;
+        }
+
+        .status-msg {
+            margin-top: 16px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-size: 0.83rem;
+            display: none;
+            text-align: center;
+        }
+
+        .status-msg.error {
+            display: block;
+            background: rgba(255, 77, 109, 0.14);
+            border: 1px solid rgba(255, 77, 109, 0.4);
+            color: #ff8fa3;
+        }
+
+        .status-msg.success {
+            display: block;
+            background: rgba(24, 184, 122, 0.16);
+            border: 1px solid rgba(24, 184, 122, 0.4);
+            color: #6ee7b7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-wrapper">
+        <div class="brand-header">
+            <div class="brand-badge">
+                <span class="brand-dot"></span>
+                Billetera Digital Universitaria
+            </div>
+            <h1>StudentWallet</h1>
+            <p>Inicia sesión o regístrate para gestionar tus finanzas</p>
+        </div>
+
+        <div class="card login-card">
+            <h2 id="form-title">Login</h2>
+
+            <div class="input-group" id="name-group" style="display: none;">
+                <input type="text" id="auth-name" placeholder="Tu nombre (Ej. Andrea Giselle)" />
+                <span class="input-icon">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </span>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="auth-email" placeholder="Correo electrónico (Ej. usuario@gmail.com)" autocomplete="email" />
+                <span class="input-icon">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                </span>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="auth-password" placeholder="Contraseña" autocomplete="current-password" />
+                <span class="input-icon" onclick="togglePasswordVisibility()" title="Mostrar/Ocultar contraseña">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                </span>
+            </div>
+
+            <span class="mode-switch-link" onclick="fillDemoCredentials()">
+                Forget Password? (Usar cuenta de demostración)
+            </span>
+
+            <div class="auth-actions">
+                <button class="btn-purple-pill" onclick="handleRegister()">Sign Up (Crear Cuenta)</button>
+                <button class="btn-outline-pill" onclick="handleLogin()">Sign In (Entrar con mi cuenta)</button>
+            </div>
+
+            <div id="status-box" class="status-msg"></div>
+        </div>
+
+        <div class="card swipe-card">
+            <button class="swipe-btn" onclick="quickDemoAccess()">Swipe to unlock</button>
+            <span class="chevrons">&gt;&gt;&gt;</span>
+        </div>
+    </div>
+
+    <script src="static/github-pages-engine.js"></script>
+    <script>
+        function goToDashboardPage() {
+            if (window.location.hostname.includes('github.io') || window.location.protocol === 'file:') {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = '/dashboard';
+            }
+        }
+
+        function showStatus(text, type) {
+            const box = document.getElementById('status-box');
+            box.textContent = text;
+            box.className = 'status-msg ' + type;
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('auth-password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function fillDemoCredentials() {
+            document.getElementById('auth-email').value = 'johnkohl.mail.com';
+            document.getElementById('auth-password').value = '123456';
+            showStatus('Cuenta de demostración lista. Presiona "Sign In" o "Swipe to unlock".', 'success');
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+
+            if (!email || !password) {
+                showStatus('Por favor ingresa tu correo y contraseña.', 'error');
+                return;
+            }
+
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+
+            if (data.ok) {
+                showStatus(data.message + ' Entrando a tu billetera...', 'success');
+                setTimeout(() => {
+                    goToDashboardPage();
+                }, 600);
+            } else {
+                showStatus(data.error, 'error');
+            }
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const name = document.getElementById('auth-name').value.trim();
+
+            if (!email || !password) {
+                showStatus('Ingresa un correo y una contraseña para registrarte.', 'error');
+                return;
+            }
+
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, name })
+            });
+            const data = await res.json();
+
+            if (data.ok) {
+                showStatus('¡Cuenta creada con éxito! Entrando al panel...', 'success');
+                setTimeout(() => {
+                    goToDashboardPage();
+                }, 600);
+            } else {
+                if (data.error && data.error.includes('ya está registrado')) {
+                    handleLogin();
+                } else {
+                    showStatus(data.error, 'error');
+                }
+            }
+        }
+
+        async function quickDemoAccess() {
+            document.getElementById('auth-email').value = 'johnkohl.mail.com';
+            document.getElementById('auth-password').value = '123456';
+            await handleLogin();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleRegister();
+            }
+        });
+    </script>
+</body>
+</html>
